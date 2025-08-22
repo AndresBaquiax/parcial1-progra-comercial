@@ -21,10 +21,8 @@ Rutas principales
 1) Empleados
 - GET /empleados
   - Lista todos los empleados activos.
-  - Body: No body
 - GET /empleados/:id
   - Obtiene un empleado por `empleado_id`.
-  - Body: No body
 - POST /empleados
   - Crea un empleado.
   - Body (JSON):
@@ -59,10 +57,8 @@ Rutas principales
 2) Proyectos
 - GET /proyectos
   - Lista proyectos activos.
-  - Body: No body
 - GET /proyectos/:id
   - Obtiene un proyecto por `proyecto_id`.
-  - Body: No body
 - POST /proyectos
   - Crea un proyecto.
   - Body (JSON):
@@ -92,16 +88,12 @@ Rutas principales
 3) Asignaciones (empleados <-> proyectos)
 - GET /asignaciones
   - Lista todas las asignaciones con datos de empleado y proyecto.
-  - Body: No body
 - GET /asignaciones/:id
   - Obtiene una asignación por `asignacion_id`.
-  - Body: No body
 - GET /asignaciones/empleado/:empleado_id
   - Historial de asignaciones de un empleado.
-  - Body: No body
 - GET /asignaciones/proyecto/:proyecto_id
   - Empleados asignados a un proyecto.
-  - Body: No body
 - POST /asignaciones
   - Asigna un empleado a un proyecto.
   - Body (JSON):
