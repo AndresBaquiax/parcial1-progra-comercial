@@ -21,8 +21,10 @@ Rutas principales
 1) Empleados
 - GET /empleados
   - Lista todos los empleados activos.
+  - Body: No body
 - GET /empleados/:id
   - Obtiene un empleado por `empleado_id`.
+  - Body: No body
 - POST /empleados
   - Crea un empleado.
   - Body (JSON):
@@ -39,7 +41,7 @@ Rutas principales
     ```
 - PUT /empleados/:id
   - Actualiza un empleado.
-  - Body (JSON) ejemplo (mismo formato que POST):
+  - Body (JSON):
     ```json
     {
       "nombre": "Juan Perez",
@@ -57,10 +59,12 @@ Rutas principales
 2) Proyectos
 - GET /proyectos
   - Lista proyectos activos.
+  - Body: No body
 - GET /proyectos/:id
   - Obtiene un proyecto por `proyecto_id`.
+  - Body: No body
 - POST /proyectos
-  - Crea un proyecto. `fecha_inicio` se genera automáticamente con la fecha actual.
+  - Crea un proyecto.
   - Body (JSON):
     ```json
     {
@@ -72,7 +76,7 @@ Rutas principales
     ```
 - PUT /proyectos/:id
   - Actualiza un proyecto.
-  - Body (JSON) ejemplo:
+  - Body (JSON):
     ```json
     {
       "nombre": "Proyecto X - Actualizado",
@@ -88,13 +92,17 @@ Rutas principales
 3) Asignaciones (empleados <-> proyectos)
 - GET /asignaciones
   - Lista todas las asignaciones con datos de empleado y proyecto.
+  - Body: No body
 - GET /asignaciones/:id
   - Obtiene una asignación por `asignacion_id`.
+  - Body: No body
 - GET /asignaciones/empleado/:empleado_id
   - Historial de asignaciones de un empleado.
+  - Body: No body
 - GET /asignaciones/proyecto/:proyecto_id
   - Empleados asignados a un proyecto.
--- POST /asignaciones
+  - Body: No body
+- POST /asignaciones
   - Asigna un empleado a un proyecto.
   - Body (JSON):
     ```json
@@ -110,13 +118,13 @@ Rutas principales
     - Puede haber varios empleados en el mismo proyecto.
 -- PUT /asignaciones/:id/liberar
   - Finaliza la asignación estableciendo `fecha_liberacion` (si no se envía, se usa la fecha actual).
-  - Body (JSON) ejemplo:
+  - Body (JSON):
     ```json
     { "fecha_liberacion": "2025-12-31" }
     ```
 - PUT /asignaciones/:id/rol
   - Actualiza el `rol` de la asignación.
-  - Body (JSON) ejemplo:
+  - Body (JSON):
     ```json
     { "rol": "Líder de proyecto" }
     ```
