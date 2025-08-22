@@ -1,16 +1,6 @@
-# Proyecto Node.js + PostgreSQL - API de Gestión
+# Proyecto Node.js + PostgreSQL - API REST Parcial 1
 
 Este proyecto es una API REST en Node.js para gestionar empleados, proyectos y las asignaciones de empleados a proyectos.
-
-Archivos importantes:
-- `script.sql` - Script de creación de las tablas (`empleados`, `proyectos`, `empleados_proyectos`).
-- `src/` - Código fuente con controladores y rutas.
-  - `src/controllers/empleados.controller.js`
-  - `src/controllers/proyectos.controller.js`
-  - `src/controllers/asignaciones.controller.js`
-  - `src/routes/empleados.routes.js`
-  - `src/routes/proyectos.routes.js`
-  - `src/routes/asignaciones.routes.js`
 
 Requisitos
 - Node.js (>=14)
@@ -20,12 +10,11 @@ Instalación y ejecución (local)
 ```powershell
 npm install
 # configurar variables de entorno en .env (conexión a Postgres, puerto, etc.)
-npm start
+npm run dev
 ```
 
 Base de datos
-- Ejecuta `script.sql` en tu base de datos PostgreSQL para crear las tablas necesarias.
-- Las tablas utilizan un campo `estado` en `empleados` y `proyectos` para eliminación lógica.
+- Ejecutar `script.sql` en tu base de datos PostgreSQL para crear las tablas necesarias.
 
 Rutas principales
 
@@ -37,25 +26,33 @@ Rutas principales
 - POST /empleados
   - Crea un empleado.
   - Body (JSON):
-    - `nombre` (string, obligatorio)
-    - `email` (string, obligatorio, único)
-    - `telefono` (string, opcional)
-    - `direccion` (string, opcional)
-    - `fecha_nacimiento` (YYYY-MM-DD, opcional)
-    - `puesto` (string, opcional)
-    - `salario` (number, opcional)
+    ```json
+    {
+      "nombre": "Juan Perez",
+      "email": "juan@example.com",
+      "telefono": "123456789",
+      "direccion": "Calle Falsa 123",
+      "fecha_nacimiento": "1990-01-01",
+      "puesto": "Desarrollador",
+      "salario": 1200.50
+    }
+    ```
 - PUT /empleados/:id
   - Actualiza un empleado.
-  - Body igual que POST.
+  - Body (JSON) ejemplo (mismo formato que POST):
+    ```json
+    {
+      "nombre": "Juan Perez",
+      "email": "juan.updated@example.com",
+      "telefono": "987654321",
+      "direccion": "Calle Nueva 45",
+      "fecha_nacimiento": "1990-01-01",
+      "puesto": "Líder técnico",
+      "salario": 1500
+    }
+    ```
 - DELETE /empleados/:id
   - Eliminación lógica (se pone `estado = false`).
-
-Ejemplo crear empleado (curl):
-```bash
-curl -X POST http://localhost:3000/empleados \
-  -H "Content-Type: application/json" \
-  -d '{"nombre":"Juan Perez","email":"juan@example.com","puesto":"Developer"}'
-```
 
 2) Proyectos
 - GET /proyectos
@@ -65,23 +62,28 @@ curl -X POST http://localhost:3000/empleados \
 - POST /proyectos
   - Crea un proyecto. `fecha_inicio` se genera automáticamente con la fecha actual.
   - Body (JSON):
-    - `nombre` (string, obligatorio)
-    - `descripcion` (string, opcional)
-    - `fecha_fin` (YYYY-MM-DD, opcional)
-    - `porcentaje_avance` (number 0-100, opcional)
+    ```json
+    {
+      "nombre": "Proyecto X",
+      "descripcion": "Descripción breve del proyecto",
+      "fecha_fin": "2025-12-31",
+      "porcentaje_avance": 0
+    }
+    ```
 - PUT /proyectos/:id
   - Actualiza un proyecto.
-  - Body (JSON):
-    - `nombre`, `descripcion`, `fecha_inicio` (YYYY-MM-DD), `fecha_fin`, `porcentaje_avance`
+  - Body (JSON) ejemplo:
+    ```json
+    {
+      "nombre": "Proyecto X - Actualizado",
+      "descripcion": "Descripción actualizada",
+      "fecha_inicio": "2025-01-01",
+      "fecha_fin": "2025-12-31",
+      "porcentaje_avance": 25.5
+    }
+    ```
 - DELETE /proyectos/:id
   - Eliminación lógica (se pone `estado = false`).
-
-Ejemplo crear proyecto (curl):
-```bash
-curl -X POST http://localhost:3000/proyectos \
-  -H "Content-Type: application/json" \
-  -d '{"nombre":"Proyecto X","descripcion":"Descripción"}'
-```
 
 3) Asignaciones (empleados <-> proyectos)
 - GET /asignaciones
@@ -92,36 +94,29 @@ curl -X POST http://localhost:3000/proyectos \
   - Historial de asignaciones de un empleado.
 - GET /asignaciones/proyecto/:proyecto_id
   - Empleados asignados a un proyecto.
-- POST /asignaciones
+-- POST /asignaciones
   - Asigna un empleado a un proyecto.
   - Body (JSON):
-    - `empleado_id` (number, obligatorio)
-    - `proyecto_id` (number, obligatorio)
-    - `fecha_asignacion` (YYYY-MM-DD, opcional; si no se envía se usa la fecha actual)
-    - `rol` (string, opcional)
+    ```json
+    {
+      "empleado_id": 1,
+      "proyecto_id": 2,
+      "fecha_asignacion": "2025-08-22",
+      "rol": "Desarrollador Frontend"
+    }
+    ```
   - Reglas de negocio importantes:
     - Un empleado sólo puede tener un proyecto activo a la vez (no puede existir una asignación sin `fecha_liberacion`).
     - Puede haber varios empleados en el mismo proyecto.
-- PUT /asignaciones/:id/liberar
+-- PUT /asignaciones/:id/liberar
   - Finaliza la asignación estableciendo `fecha_liberacion` (si no se envía, se usa la fecha actual).
-  - Body: `{ "fecha_liberacion": "YYYY-MM-DD" }` (opcional)
+  - Body (JSON) ejemplo:
+    ```json
+    { "fecha_liberacion": "2025-12-31" }
+    ```
 - PUT /asignaciones/:id/rol
   - Actualiza el `rol` de la asignación.
-  - Body: `{ "rol": "Nuevo rol" }`
-
-Ejemplo asignar empleado (curl):
-```bash
-curl -X POST http://localhost:3000/asignaciones \
-  -H "Content-Type: application/json" \
-  -d '{"empleado_id":1,"proyecto_id":2,"rol":"Frontend"}'
-```
-
-Errores y respuestas
-- Las rutas devuelven códigos HTTP adecuados: 200, 201, 400, 404, 409, 500.
-- Las respuestas de error contienen la descripción del error en texto (mensaje de la excepción).
-
-Notas finales
-- Revisa `src/database/querys.js` para ver las consultas SQL usadas por los controladores.
-- Ajusta las variables de entorno en el archivo de configuración para apuntar a tu base de datos.
-
-Si quieres, puedo agregar ejemplos con Postman o un archivo `env.example` con las variables necesarias.
+  - Body (JSON) ejemplo:
+    ```json
+    { "rol": "Líder de proyecto" }
+    ```
